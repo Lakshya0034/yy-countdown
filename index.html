@@ -6,7 +6,7 @@
     <title>YYGS Application Countdown</title>
     <style>
         body {
-            font-family: 'Courier New', Courier, monospace; /* Monospace font prevents jitter */
+            font-family: 'Courier New', Courier, monospace;
             background-color: #1a1a1a;
             color: #ffffff;
             display: flex;
@@ -23,12 +23,15 @@
             text-transform: uppercase;
             letter-spacing: 2px;
             color: #00d4ff;
+            text-align: center;
         }
 
         #timer {
             display: flex;
-            gap: 20px;
+            gap: 15px; /* Reduced gap slightly to fit 5 boxes */
             font-size: 1.5rem;
+            flex-wrap: wrap; /* Allows wrapping on small mobile screens */
+            justify-content: center;
         }
 
         .time-segment {
@@ -38,25 +41,25 @@
             background: #2d2d2d;
             padding: 15px;
             border-radius: 8px;
-            min-width: 80px;
+            min-width: 70px;
             box-shadow: 0 4px 6px rgba(0,0,0,0.3);
         }
 
         .number {
-            font-size: 3rem;
+            font-size: 2.5rem; /* Slightly smaller to fit days */
             font-weight: bold;
         }
 
         .label {
-            font-size: 0.8rem;
+            font-size: 0.7rem;
             color: #aaa;
             margin-top: 5px;
         }
 
-        /* Highlight milliseconds to show speed */
+        /* Highlight milliseconds */
         .ms-segment .number {
             color: #ff4757; 
-            min-width: 100px; /* Wider for 3 digits */
+            min-width: 90px;
         }
     </style>
 </head>
@@ -65,6 +68,10 @@
     <h1>YYGS Application Announcement</h1>
 
     <div id="timer">
+        <div class="time-segment">
+            <span class="number" id="days">00</span>
+            <span class="label">DAYS</span>
+        </div>
         <div class="time-segment">
             <span class="number" id="hours">00</span>
             <span class="label">HOURS</span>
@@ -85,36 +92,36 @@
 
     <script>
         // --- CONFIGURATION ---
-        // Set your target date and time here (Year, Month index 0-11, Day, Hour, Minute)
-        // Example: Jan 15, 2026 at 12:00 PM
-        const targetDate = new Date('March 11, 2026 7:59:00').getTime();
+        // Target: March 11, 2026 at 7:59:00 AM
+        // Note: This counts down to 7:59 AM in your LOCAL computer's timezone.
+        const targetDate = new Date('March 11, 2026 07:59:00').getTime();
 
         function updateTimer() {
             const now = new Date().getTime();
             const distance = targetDate - now;
 
             if (distance < 0) {
-                document.getElementById("timer").innerHTML = "ANNOUNCED";
+                document.getElementById("timer").innerHTML = "<div class='time-segment' style='width:auto; padding:20px'>ANNOUNCED</div>";
                 return;
             }
 
             // Calculations
+            const days = Math.floor(distance / (1000 * 60 * 60 * 24));
             const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
             const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
             const seconds = Math.floor((distance % (1000 * 60)) / 1000);
             const milliseconds = Math.floor(distance % 1000);
 
-            // Output to HTML with padding (e.g., "0" becomes "00")
+            // Output to HTML
+            document.getElementById("days").innerText = days.toString().padStart(2, '0');
             document.getElementById("hours").innerText = hours.toString().padStart(2, '0');
             document.getElementById("minutes").innerText = minutes.toString().padStart(2, '0');
             document.getElementById("seconds").innerText = seconds.toString().padStart(2, '0');
             document.getElementById("milliseconds").innerText = milliseconds.toString().padStart(3, '0');
 
-            // Request next frame for smooth animation
             requestAnimationFrame(updateTimer);
         }
 
-        // Start the timer
         updateTimer();
     </script>
 </body>
