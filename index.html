@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>YYG Application Countdown</title>
+    <style>
+        body {
+            font-family: 'Courier New', Courier, monospace; /* Monospace font prevents jitter */
+            background-color: #1a1a1a;
+            color: #ffffff;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            margin: 0;
+        }
+
+        h1 {
+            font-size: 2rem;
+            margin-bottom: 2rem;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            color: #00d4ff;
+        }
+
+        #timer {
+            display: flex;
+            gap: 20px;
+            font-size: 1.5rem;
+        }
+
+        .time-segment {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            background: #2d2d2d;
+            padding: 15px;
+            border-radius: 8px;
+            min-width: 80px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.3);
+        }
+
+        .number {
+            font-size: 3rem;
+            font-weight: bold;
+        }
+
+        .label {
+            font-size: 0.8rem;
+            color: #aaa;
+            margin-top: 5px;
+        }
+
+        /* Highlight milliseconds to show speed */
+        .ms-segment .number {
+            color: #ff4757; 
+            min-width: 100px; /* Wider for 3 digits */
+        }
+    </style>
+</head>
+<body>
+
+    <h1>YYG Application Announcement</h1>
+
+    <div id="timer">
+        <div class="time-segment">
+            <span class="number" id="hours">00</span>
+            <span class="label">HOURS</span>
+        </div>
+        <div class="time-segment">
+            <span class="number" id="minutes">00</span>
+            <span class="label">MINS</span>
+        </div>
+        <div class="time-segment">
+            <span class="number" id="seconds">00</span>
+            <span class="label">SECS</span>
+        </div>
+        <div class="time-segment ms-segment">
+            <span class="number" id="milliseconds">000</span>
+            <span class="label">MS</span>
+        </div>
+    </div>
+
+    <script>
+        // --- CONFIGURATION ---
+        // Set your target date and time here (Year, Month index 0-11, Day, Hour, Minute)
+        // Example: Jan 15, 2026 at 12:00 PM
+        const targetDate = new Date('January 15, 2026 12:00:00').getTime();
+
+        function updateTimer() {
+            const now = new Date().getTime();
+            const distance = targetDate - now;
+
+            if (distance < 0) {
+                document.getElementById("timer").innerHTML = "ANNOUNCED";
+                return;
+            }
+
+            // Calculations
+            const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+            const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+            const seconds = Math.floor((distance % (1000 * 60)) / 1000);
+            const milliseconds = Math.floor(distance % 1000);
+
+            // Output to HTML with padding (e.g., "0" becomes "00")
+            document.getElementById("hours").innerText = hours.toString().padStart(2, '0');
+            document.getElementById("minutes").innerText = minutes.toString().padStart(2, '0');
+            document.getElementById("seconds").innerText = seconds.toString().padStart(2, '0');
+            document.getElementById("milliseconds").innerText = milliseconds.toString().padStart(3, '0');
+
+            // Request next frame for smooth animation
+            requestAnimationFrame(updateTimer);
+        }
+
+        // Start the timer
+        updateTimer();
+    </script>
+</body>
+</html>
